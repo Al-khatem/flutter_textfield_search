@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:textfield_search/search_model.dart';
+
 class TextFieldSearch extends StatefulWidget {
   /// A default list of values that can be used for an initial list of elements to select from
-  final List? initialList;
-
-  /// A string used for display of the selectable elements
-  final String label;
+  final List<TextFiledSearchModel> initialList;
 
   /// A controller for an editable text field
   final TextEditingController controller;
 
-  /// An optional future or async function that should return a list of selectable elements
-  final Function? future;
+  final Brightness? keyboardAppearance;
 
-  /// The value selected on tap of an element within the list
-  final Function? getSelectedValue;
+  final FormFieldValidator<String>? validator;
+
+  final Color? dropdownColor;
+  final Color? clearIconColor;
+
+  final void Function(dynamic value) onChanged;
+  final dynamic value;
 
   /// Used for customizing the display of the TextField
   final InputDecoration? decoration;
@@ -33,19 +36,22 @@ class TextFieldSearch extends StatefulWidget {
   final int itemsInView;
 
   /// Creates a TextFieldSearch for displaying selected elements and retrieving a selected element
-  const TextFieldSearch(
-      {Key? key,
-      this.initialList,
-      required this.label,
-      required this.controller,
-      this.textStyle,
-      this.future,
-      this.getSelectedValue,
-      this.decoration,
-      this.scrollbarDecoration,
-      this.itemsInView = 3,
-      this.minStringLength = 2})
-      : super(key: key);
+  const TextFieldSearch({
+    Key? key,
+    required this.initialList,
+    required this.controller,
+    this.keyboardAppearance,
+    this.validator,
+    this.textStyle,
+    this.decoration,
+    this.scrollbarDecoration,
+    this.itemsInView = 3,
+    this.minStringLength = 2,
+    this.dropdownColor,
+    this.clearIconColor,
+    required this.onChanged,
+    this.value,
+  }) : super(key: key);
 
   @override
   _TextFieldSearchState createState() => _TextFieldSearchState();
@@ -55,16 +61,15 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
   final FocusNode _focusNode = FocusNode();
   late OverlayEntry _overlayEntry;
   final LayerLink _layerLink = LayerLink();
-  List? filteredList = <dynamic>[];
-  bool hasFuture = false;
+  List<TextFiledSearchModel> filteredList = [];
   bool loading = false;
-  final _debouncer = Debouncer(milliseconds: 1000);
+  final _debouncer = Debouncer(milliseconds: 50);
   static const itemHeight = 55;
   bool? itemsFound;
-  ScrollController _scrollController = ScrollController();
+  // ScrollController _scrollController = ScrollController();
 
   void resetList() {
-    List tempList = <dynamic>[];
+    List<TextFiledSearchModel> tempList = [];
     setState(() {
       // after loop is done, set the filteredList state from the tempList
       this.filteredList = tempList;
@@ -82,7 +87,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     }
   }
 
-  void resetState(List tempList) {
+  void resetState(List<TextFiledSearchModel> tempList) {
     setState(() {
       // after loop is done, set the filteredList state from the tempList
       this.filteredList = tempList;
@@ -96,63 +101,23 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     this._overlayEntry.markNeedsBuild();
   }
 
-  void updateGetItems() {
-    // mark that the overlay widget needs to be rebuilt
-    // so loader can show
-    this._overlayEntry.markNeedsBuild();
-    if (widget.controller.text.length > widget.minStringLength) {
-      this.setLoading();
-      widget.future!().then((value) {
-        this.filteredList = value;
-        // create an empty temp list
-        List tempList = <dynamic>[];
-        // loop through each item in filtered items
-        for (int i = 0; i < filteredList!.length; i++) {
-          // lowercase the item and see if the item contains the string of text from the lowercase search
-          if (widget.getSelectedValue != null) {
-            if (this
-                .filteredList![i]
-                .label
-                .toLowerCase()
-                .contains(widget.controller.text.toLowerCase())) {
-              // if there is a match, add to the temp list
-              tempList.add(this.filteredList![i]);
-            }
-          } else {
-            if (this
-                .filteredList![i]
-                .toLowerCase()
-                .contains(widget.controller.text.toLowerCase())) {
-              // if there is a match, add to the temp list
-              tempList.add(this.filteredList![i]);
-            }
-          }
-        }
-        // helper function to set tempList and other state props
-        this.resetState(tempList);
-      });
-    } else {
-      // reset the list if we ever have less than 2 characters
-      resetList();
-    }
-  }
-
   void updateList() {
     this.setLoading();
     // set the filtered list using the initial list
     this.filteredList = widget.initialList;
 
     // create an empty temp list
-    List tempList = <dynamic>[];
+    List<TextFiledSearchModel> tempList = [];
     // loop through each item in filtered items
-    for (int i = 0; i < filteredList!.length; i++) {
+    for (int i = 0; i < filteredList.length; i++) {
       // lowercase the item and see if the item contains the string of text from the lowercase search
       if (this
-          .filteredList![i]
+          .filteredList[i]
+          .text
           .toLowerCase()
           .contains(widget.controller.text.toLowerCase())) {
         // if there is a match, add to the temp list
-        tempList.add(this.filteredList![i]);
+        tempList.add(this.filteredList[i]);
       }
     }
     // helper function to set tempList and other state props
@@ -162,25 +127,28 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
   void initState() {
     super.initState();
 
-    if (widget.scrollbarDecoration?.controller != null) {
-      _scrollController = widget.scrollbarDecoration!.controller;
-    }
-
     // throw error if we don't have an initial list or a future
-    if (widget.initialList == null && widget.future == null) {
+    // ignore: unnecessary_null_comparison
+    if (widget.initialList == null) {
       throw ('Error: Missing required initial list or future that returns list');
     }
-    if (widget.future != null) {
-      setState(() {
-        hasFuture = true;
-      });
-    }
+
+    Future.delayed(Duration.zero, () {
+      if (widget.value != null) {
+        final selectedValue = widget.initialList
+            .firstWhere((element) => element.value == widget.value);
+
+        widget.controller.text = selectedValue.text;
+        widget.onChanged(selectedValue.value);
+      }
+    });
+
     // add event listener to the focus node and only give an overlay if an entry
     // has focus and insert the overlay into Overlay context otherwise remove it
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         this._overlayEntry = this._createOverlayEntry();
-        Overlay.of(context)!.insert(this._overlayEntry);
+        Overlay.of(context).insert(this._overlayEntry);
       } else {
         this._overlayEntry.remove();
         // check to see if itemsFound is false, if it is clear the input
@@ -192,15 +160,10 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         }
         // if we have a list of items, make sure the text input matches one of them
         // if not, clear the input
-        if (filteredList!.length > 0) {
+        if (filteredList.length > 0) {
           bool textMatchesItem = false;
-          if (widget.getSelectedValue != null) {
-            // try to match the label against what is set on controller
-            textMatchesItem = filteredList!
-                .any((item) => item.label == widget.controller.text);
-          } else {
-            textMatchesItem = filteredList!.contains(widget.controller.text);
-          }
+          textMatchesItem = filteredList.contains(widget.controller.text);
+
           if (textMatchesItem == false) widget.controller.clear();
           resetList();
         }
@@ -208,19 +171,19 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     });
   }
 
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    widget.controller.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // Clean up the controller when the widget is disposed.
+  //   widget.controller.dispose();
+  //   super.dispose();
+  // }
 
   ListView _listViewBuilder(context) {
     if (itemsFound == false) {
       return ListView(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
-        controller: _scrollController,
+        // controller: _scrollController,
         children: <Widget>[
           GestureDetector(
             onTap: () {
@@ -235,39 +198,35 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               FocusScope.of(context).unfocus();
             },
             child: ListTile(
-              title: Text('No matching items.'),
-              trailing: Icon(Icons.cancel),
+              title: Text('No matching items.', style: widget.textStyle),
+              trailing: Icon(Icons.cancel, color: widget.clearIconColor),
             ),
           ),
         ],
       );
     }
     return ListView.builder(
-      controller: _scrollController,
-      itemCount: filteredList!.length,
+      // controller: _scrollController,
+      itemCount: filteredList.length,
       itemBuilder: (context, i) {
         return GestureDetector(
-            onTap: () {
-              // set the controller value to what was selected
-              setState(() {
-                // if we have a label property, and getSelectedValue function
-                // send getSelectedValue to parent widget using the label property
-                if (widget.getSelectedValue != null) {
-                  widget.controller.text = filteredList![i].label;
-                  widget.getSelectedValue!(filteredList![i]);
-                } else {
-                  widget.controller.text = filteredList![i];
-                }
-              });
-              // reset the list so it's empty and not visible
-              resetList();
-              // remove the focus node so we aren't editing the text
-              FocusScope.of(context).unfocus();
-            },
-            child: ListTile(
-                title: widget.getSelectedValue != null
-                    ? Text(filteredList![i].label)
-                    : Text(filteredList![i])));
+          onTap: () {
+            // set the controller value to what was selected
+            setState(() {
+              // if we have a label property, and getSelectedValue function
+              // send getSelectedValue to parent widget using the label property
+              widget.controller.text = filteredList[i].text;
+              widget.onChanged(filteredList[i].value);
+            });
+            // reset the list so it's empty and not visible
+            resetList();
+            // remove the focus node so we aren't editing the text
+            FocusScope.of(context).unfocus();
+          },
+          child: ListTile(
+            title: Text(filteredList[i].text, style: widget.textStyle),
+          ),
+        );
       },
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -280,7 +239,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       width: 50,
       height: 50,
       child: Center(
-        child: CircularProgressIndicator(
+        child: CircularProgressIndicator.adaptive(
           valueColor: AlwaysStoppedAnimation<Color>(
               Theme.of(context).colorScheme.secondary),
         ),
@@ -292,8 +251,8 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     if (widget.scrollbarDecoration is ScrollbarDecoration) {
       return Theme(
         data: Theme.of(context)
-            .copyWith(scrollbarTheme: widget.scrollbarDecoration!.theme),
-        child: Scrollbar(child: child, controller: _scrollController),
+            .copyWith(scrollbarTheme: widget.scrollbarDecoration?.theme),
+        child: Scrollbar(child: child),
       );
     }
 
@@ -301,9 +260,10 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
   }
 
   Widget? _listViewContainer(context) {
-    if (itemsFound == true && filteredList!.length > 0 ||
+    if (itemsFound == true && filteredList.length > 0 ||
         itemsFound == false && widget.controller.text.length > 0) {
       return Container(
+          color: widget.dropdownColor,
           height: calculateHeight().toDouble(),
           child: decoratedScrollbar(_listViewBuilder(context)));
     }
@@ -315,12 +275,12 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
   }
 
   num calculateHeight() {
-    if (filteredList!.length > 1) {
-      if (widget.itemsInView <= filteredList!.length) {
+    if (filteredList.length > 1) {
+      if (widget.itemsInView <= filteredList.length) {
         return heightByLength(widget.itemsInView);
       }
 
-      return heightByLength(filteredList!.length);
+      return heightByLength(filteredList.length);
     }
 
     return itemHeight;
@@ -332,51 +292,59 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     Size screenSize = MediaQuery.of(context).size;
     double screenWidth = screenSize.width;
     return OverlayEntry(
-        builder: (context) => Positioned(
-              width: overlaySize.width,
-              child: CompositedTransformFollower(
-                link: _layerLink,
-                showWhenUnlinked: false,
-                offset: Offset(0.0, overlaySize.height + 5.0),
-                child: Material(
-                  elevation: 4.0,
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: screenWidth,
-                        maxWidth: screenWidth,
-                        minHeight: 0,
-                        maxHeight: calculateHeight().toDouble(),
-                      ),
-                      child: loading
-                          ? _loadingIndicator()
-                          : _listViewContainer(context)),
+      builder: (context) => Positioned(
+        width: overlaySize.width,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          offset: Offset(0.0, overlaySize.height + 5.0),
+          child: Material(
+            elevation: 4.0,
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: screenWidth,
+                  maxWidth: screenWidth,
+                  minHeight: 0,
+                  maxHeight: calculateHeight().toDouble(),
                 ),
-              ),
-            ));
+                child: loading
+                    ? _loadingIndicator()
+                    : _listViewContainer(context)),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: this._layerLink,
-      child: TextField(
+      child: TextFormField(
         controller: widget.controller,
+        keyboardAppearance: widget.keyboardAppearance,
+        validator: widget.validator,
         focusNode: this._focusNode,
-        decoration: widget.decoration != null
-            ? widget.decoration
-            : InputDecoration(labelText: widget.label),
+        decoration: widget.decoration,
         style: widget.textStyle,
-        onChanged: (String value) {
-          // every time we make a change to the input, update the list
+        onTap: () {
           _debouncer.run(() {
             setState(() {
-              if (hasFuture) {
-                updateGetItems();
-              } else {
-                updateList();
-              }
+              updateList();
             });
           });
+        },
+        onChanged: (String value) {
+          print(value);
+          _debouncer.run(() {
+            setState(() {
+              updateList();
+            });
+          });
+
+          if (value.isEmpty) {
+            widget.onChanged(null);
+          }
         },
       ),
     );
@@ -398,7 +366,7 @@ class Debouncer {
 
   run(VoidCallback action) {
     if (_timer != null) {
-      _timer!.cancel();
+      _timer?.cancel();
     }
     _timer = Timer(Duration(milliseconds: milliseconds!), action);
   }
