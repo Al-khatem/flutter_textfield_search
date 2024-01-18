@@ -335,7 +335,6 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
           });
         },
         onChanged: (String value) {
-          print(value);
           _debouncer.run(() {
             setState(() {
               updateList();
