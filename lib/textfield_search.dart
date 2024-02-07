@@ -35,8 +35,6 @@ class TextFieldSearch extends StatefulWidget {
   /// The number of matched items that are viewable in results
   final int itemsInView;
 
-  final FocusNode? focusNode;
-
   /// Creates a TextFieldSearch for displaying selected elements and retrieving a selected element
   const TextFieldSearch({
     Key? key,
@@ -53,7 +51,6 @@ class TextFieldSearch extends StatefulWidget {
     this.clearIconColor,
     required this.onChanged,
     this.value,
-    this.focusNode,
   }) : super(key: key);
 
   @override
@@ -61,7 +58,7 @@ class TextFieldSearch extends StatefulWidget {
 }
 
 class _TextFieldSearchState extends State<TextFieldSearch> {
-  late final FocusNode _focusNode = widget.focusNode ?? FocusNode();
+  late final FocusNode _focusNode = FocusNode();
   late OverlayEntry _overlayEntry;
   final LayerLink _layerLink = LayerLink();
   List<TextFiledSearchModel> filteredList = [];
