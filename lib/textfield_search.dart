@@ -210,7 +210,13 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       // controller: _scrollController,
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return MouseRegion(
+        return TextFieldTapRegion(
+          onTapInside: (event) {
+            print("111111onTapInside11111111");
+          },
+          onTapOutside: (event) {
+            print("111111onTapOutside11111111");
+          },
           child: Material(
             color: Colors.transparent,
             child: InkWell(
