@@ -228,10 +228,12 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
           child: Stack(
             children: [
               IgnorePointer(
+                ignoring: true,
                 child: ListTile(
                   title: Text(filteredList[i].text, style: widget.textStyle),
                 ),
               ),
+              SizedBox.shrink(),
             ],
           ),
         );
