@@ -185,7 +185,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         shrinkWrap: true,
         // controller: _scrollController,
         children: <Widget>[
-          GestureDetector(
+          ListTile(
             onTap: () {
               // clear the text field controller to reset it
               widget.controller.clear();
@@ -197,10 +197,8 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               // remove the focus node so we aren't editing the text
               FocusScope.of(context).unfocus();
             },
-            child: ListTile(
-              title: Text('No matching items.', style: widget.textStyle),
-              trailing: Icon(Icons.cancel, color: widget.clearIconColor),
-            ),
+            title: Text('No matching items.', style: widget.textStyle),
+            trailing: Icon(Icons.cancel, color: widget.clearIconColor),
           ),
         ],
       );
@@ -209,7 +207,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       // controller: _scrollController,
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return GestureDetector(
+        return ListTile(
           onTap: () {
             // set the controller value to what was selected
             setState(() {
@@ -223,9 +221,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
             // remove the focus node so we aren't editing the text
             FocusScope.of(context).unfocus();
           },
-          child: ListTile(
-            title: Text(filteredList[i].text, style: widget.textStyle),
-          ),
+          title: Text(filteredList[i].text, style: widget.textStyle),
         );
       },
       padding: EdgeInsets.zero,
