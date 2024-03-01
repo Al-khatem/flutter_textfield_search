@@ -212,6 +212,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       itemBuilder: (context, i) {
         return MouseRegion(
           child: Material(
+            color: Colors.transparent,
             child: InkWell(
               onTap: () {
                 log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
