@@ -208,20 +208,20 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
         return MouseRegion(
-          onEnter: (event) {
-            print("object1");
-            // set the controller value to what was selected
-            setState(() {
-              // if we have a label property, and getSelectedValue function
-              // send getSelectedValue to parent widget using the label property
-              widget.controller.text = filteredList[i].text;
-              widget.onChanged(filteredList[i].value);
-            });
-            // reset the list so it's empty and not visible
-            resetList();
-            // remove the focus node so we aren't editing the text
-            FocusScope.of(context).unfocus();
-          },
+          // onEnter: (event) {
+          //   print("object1");
+          //   // set the controller value to what was selected
+          //   setState(() {
+          //     // if we have a label property, and getSelectedValue function
+          //     // send getSelectedValue to parent widget using the label property
+          //     widget.controller.text = filteredList[i].text;
+          //     widget.onChanged(filteredList[i].value);
+          //   });
+          //   // reset the list so it's empty and not visible
+          //   resetList();
+          //   // remove the focus node so we aren't editing the text
+          //   FocusScope.of(context).unfocus();
+          // },
           child: ListTile(
             onTap: () {
               print("object2");
