@@ -225,7 +225,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               FocusScope.of(context).unfocus();
             }
           },
-          child: ListTile(
+          child: InkWell(
             onTap: () {
               print("object2");
               // set the controller value to what was selected
@@ -240,7 +240,9 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               // remove the focus node so we aren't editing the text
               FocusScope.of(context).unfocus();
             },
-            title: Text(filteredList[i].text, style: widget.textStyle),
+            child: ListTile(
+              title: Text(filteredList[i].text, style: widget.textStyle),
+            ),
           ),
         );
       },
