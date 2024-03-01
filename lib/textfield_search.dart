@@ -211,12 +211,12 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
         return TextFieldTapRegion(
-          onTapInside: (event) {
-            print("111111onTapInside11111111");
-          },
-          onTapOutside: (event) {
-            print("111111onTapOutside11111111");
-          },
+          // onTapInside: (event) {
+          //   print("111111onTapInside11111111");
+          // },
+          // onTapOutside: (event) {
+          //   print("111111onTapOutside11111111");
+          // },
           child: Material(
             color: Colors.transparent,
             child: InkWell(
