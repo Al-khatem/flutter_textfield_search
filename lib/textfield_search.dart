@@ -208,8 +208,8 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       // controller: _scrollController,
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return MouseRegion(
-          onEnter: (event) {
+        return InkWell(
+          onTap: () {
             //  onTap: () {
             print("object2");
             // set the controller value to what was selected
@@ -225,8 +225,14 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
             // FocusScope.of(context).unfocus();
             //   },
           },
-          child: ListTile(
-            title: Text(filteredList[i].text, style: widget.textStyle),
+          child: Stack(
+            children: [
+              IgnorePointer(
+                child: ListTile(
+                  title: Text(filteredList[i].text, style: widget.textStyle),
+                ),
+              ),
+            ],
           ),
         );
       },
