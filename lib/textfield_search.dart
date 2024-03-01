@@ -225,24 +225,22 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               FocusScope.of(context).unfocus();
             }
           },
-          child: InkWell(
-            onTap: () {
-              print("object2");
-              // set the controller value to what was selected
-              setState(() {
-                // if we have a label property, and getSelectedValue function
-                // send getSelectedValue to parent widget using the label property
-                widget.controller.text = filteredList[i].text;
-                widget.onChanged(filteredList[i].value);
-              });
-              // reset the list so it's empty and not visible
-              resetList();
-              // remove the focus node so we aren't editing the text
-              FocusScope.of(context).unfocus();
-            },
-            child: ListTile(
-              title: Text(filteredList[i].text, style: widget.textStyle),
-            ),
+          //  onTap: () {
+          //     print("object2");
+          //     // set the controller value to what was selected
+          //     setState(() {
+          //       // if we have a label property, and getSelectedValue function
+          //       // send getSelectedValue to parent widget using the label property
+          //       widget.controller.text = filteredList[i].text;
+          //       widget.onChanged(filteredList[i].value);
+          //     });
+          //     // reset the list so it's empty and not visible
+          //     resetList();
+          //     // remove the focus node so we aren't editing the text
+          //     FocusScope.of(context).unfocus();
+          //   },
+          child: ListTile(
+            title: Text(filteredList[i].text, style: widget.textStyle),
           ),
         );
       },
