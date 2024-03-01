@@ -337,7 +337,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         controller: widget.controller,
         keyboardAppearance: widget.keyboardAppearance,
         validator: widget.validator,
-        focusNode: this._focusNode,
+        // focusNode:  this._focusNode,
         decoration: widget.decoration,
         style: widget.textStyle,
         onTap: () {
