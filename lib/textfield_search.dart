@@ -210,34 +210,29 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       // controller: _scrollController,
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return InkWell(
-          onTap: () {
-            log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            throw ("++++++++++++++++++++++++++++++");
-            //  onTap: () {
-            // set the controller value to what was selected
-            // setState(() {
-            //   // if we have a label property, and getSelectedValue function
-            //   // send getSelectedValue to parent widget using the label property
-            //   widget.controller.text = filteredList[i].text;
-            //   widget.onChanged(filteredList[i].value);
-            // });
-            // // reset the list so it's empty and not visible
-            // resetList();
-            // remove the focus node so we aren't editing the text
-            // FocusScope.of(context).unfocus();
-            //   },
-          },
-          child: Stack(
-            children: [
-              IgnorePointer(
-                ignoring: true,
-                child: ListTile(
-                  title: Text(filteredList[i].text, style: widget.textStyle),
-                ),
+        return MouseRegion(
+          child: Material(
+            child: InkWell(
+              onTap: () {
+                log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                //  onTap: () {
+                // set the controller value to what was selected
+                setState(() {
+                  // if we have a label property, and getSelectedValue function
+                  // send getSelectedValue to parent widget using the label property
+                  widget.controller.text = filteredList[i].text;
+                  widget.onChanged(filteredList[i].value);
+                });
+                // reset the list so it's empty and not visible
+                resetList();
+                // remove the focus node so we aren't editing the text
+                // FocusScope.of(context).unfocus();
+                //   },
+              },
+              child: ListTile(
+                title: Text(filteredList[i].text, style: widget.textStyle),
               ),
-              SizedBox.shrink(),
-            ],
+            ),
           ),
         );
       },
@@ -337,7 +332,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         controller: widget.controller,
         keyboardAppearance: widget.keyboardAppearance,
         validator: widget.validator,
-        focusNode:  this._focusNode,
+        focusNode: this._focusNode,
         decoration: widget.decoration,
         style: widget.textStyle,
         onTap: () {
