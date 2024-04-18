@@ -124,8 +124,8 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     this.resetState(tempList);
   }
 
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
 
     // throw error if we don't have an initial list or a future
     // ignore: unnecessary_null_comparison
@@ -140,8 +140,6 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
 
         widget.controller.text = selectedValue.text;
         widget.onChanged(selectedValue.value);
-      } else {
-        widget.controller.clear();
       }
     });
 
