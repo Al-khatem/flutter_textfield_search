@@ -124,8 +124,8 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     this.resetState(tempList);
   }
 
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     // throw error if we don't have an initial list or a future
     // ignore: unnecessary_null_comparison
