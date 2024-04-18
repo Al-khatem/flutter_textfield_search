@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -143,6 +140,9 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
 
         widget.controller.text = selectedValue.text;
         widget.onChanged(selectedValue.value);
+      } else {
+        widget.controller.text = '';
+        widget.onChanged(null);
       }
     });
 
@@ -174,13 +174,6 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     });
   }
 
-  // @override
-  // void dispose() {
-  //   // Clean up the controller when the widget is disposed.
-  //   widget.controller.dispose();
-  //   super.dispose();
-  // }
-
   ListView _listViewBuilder(context) {
     if (itemsFound == false) {
       return ListView(
@@ -207,22 +200,13 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       );
     }
     return ListView.builder(
-      // controller: _scrollController,
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
         return TextFieldTapRegion(
-          // onTapInside: (event) {
-          //   print("111111onTapInside11111111");
-          // },
-          // onTapOutside: (event) {
-          //   print("111111onTapOutside11111111");
-          // },
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                //  onTap: () {
                 // set the controller value to what was selected
                 setState(() {
                   // if we have a label property, and getSelectedValue function
@@ -234,7 +218,6 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
                 resetList();
                 // remove the focus node so we aren't editing the text
                 // FocusScope.of(context).unfocus();
-                //   },
               },
               child: ListTile(
                 title: Text(filteredList[i].text, style: widget.textStyle),
