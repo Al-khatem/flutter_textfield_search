@@ -141,8 +141,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         widget.controller.text = selectedValue.text;
         widget.onChanged(selectedValue.value);
       } else {
-        widget.controller.text = '';
-        widget.onChanged(null);
+        widget.controller.clear();
       }
     });
 
