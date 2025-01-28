@@ -202,7 +202,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         return TextFieldTapRegion(
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
+            child: GestureDetector(
               onTap: () {
                 // set the controller value to what was selected
                 setState(() {
