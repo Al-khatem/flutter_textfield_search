@@ -116,46 +116,48 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
             children: <Widget>[
               SizedBox(height: 16),
-              TextFieldSearch(
-                  label: 'Simple Future List',
-                  controller: myController2,
-                  future: () {
-                    return fetchSimpleData();
-                  }),
+              // TextFieldSearch(
+              //   label: 'Simple Future List',
+              //   controller: myController2,
+              //   future: () {
+              //     return fetchSimpleData();
+              //   },
+              //   initialList: _testList,
+              // ),
               SizedBox(height: 16),
-              TextFieldSearch(
-                label: 'Complex Future List',
-                controller: myController3,
-                future: () {
-                  return fetchComplexData();
-                },
-                getSelectedValue: (item) {
-                  print(item);
-                },
-                minStringLength: 5,
-                textStyle: TextStyle(color: Colors.red),
-                decoration: InputDecoration(hintText: 'Search For Something'),
-              ),
-              SizedBox(height: 16),
-              TextFieldSearch(
-                  label: 'Future List with custom scrollbar theme',
-                  controller: myController4,
-                  scrollbarDecoration: ScrollbarDecoration(
-                      controller: ScrollController(),
-                      theme: ScrollbarThemeData(
-                          radius: Radius.circular(30.0),
-                          thickness: MaterialStateProperty.all(20.0),
-                          isAlwaysShown: true,
-                          trackColor: MaterialStateProperty.all(Colors.red))),
-                  future: () {
-                    return fetchSimpleData();
-                  }),
-              SizedBox(height: 16),
-              TextFieldSearch(
-                  initialList: _testList,
-                  label: 'Simple List',
-                  controller: myController),
-              SizedBox(height: 16),
+              // TextFieldSearch(
+              //   label: 'Complex Future List',
+              //   controller: myController3,
+              //   future: () {
+              //     return fetchComplexData();
+              //   },
+              //   getSelectedValue: (item) {
+              //     print(item);
+              //   },
+              //   minStringLength: 5,
+              //   textStyle: TextStyle(color: Colors.red),
+              //   decoration: InputDecoration(hintText: 'Search For Something'),
+              // ),
+              // SizedBox(height: 16),
+              // TextFieldSearch(
+              //     label: 'Future List with custom scrollbar theme',
+              //     controller: myController4,
+              //     scrollbarDecoration: ScrollbarDecoration(
+              //         controller: ScrollController(),
+              //         theme: ScrollbarThemeData(
+              //             radius: Radius.circular(30.0),
+              //             thickness: MaterialStateProperty.all(20.0),
+              //             isAlwaysShown: true,
+              //             trackColor: MaterialStateProperty.all(Colors.red))),
+              //     future: () {
+              //       return fetchSimpleData();
+              //     }),
+              // SizedBox(height: 16),
+              // TextFieldSearch(
+              //     initialList: _testList,
+              //     label: 'Simple List',
+              //     controller: myController),
+              // SizedBox(height: 16),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Description'),
               ),
