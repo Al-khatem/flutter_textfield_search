@@ -230,7 +230,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
                   // reset the list so it's empty and not visible
                   resetList();
                   // remove the focus node so we aren't editing the text
-                  // FocusScope.of(context).unfocus();
+                 FocusScope.of(context).unfocus();
                 };
               },
             )
