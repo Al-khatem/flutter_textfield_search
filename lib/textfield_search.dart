@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -178,20 +179,32 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         shrinkWrap: true,
         // controller: _scrollController,
         children: <Widget>[
-          ListTile(
-            onTap: () {
-              // clear the text field controller to reset it
-              widget.controller.clear();
-              setState(() {
-                itemsFound = false;
-              });
-              // reset the list so it's empty and not visible
-              resetList();
-              // remove the focus node so we aren't editing the text
-              FocusScope.of(context).unfocus();
+          RawGestureDetector(
+            gestures: {
+              AllowMultipleGestureRecognizer:
+                  GestureRecognizerFactoryWithHandlers<
+                      AllowMultipleGestureRecognizer>(
+                () => AllowMultipleGestureRecognizer(),
+                (AllowMultipleGestureRecognizer instance) {
+                  instance.onTap = () {
+                    // clear the text field controller to reset it
+                    widget.controller.clear();
+                    setState(() {
+                      itemsFound = false;
+                    });
+                    // reset the list so it's empty and not visible
+                    resetList();
+                    // remove the focus node so we aren't editing the text
+                    FocusScope.of(context).unfocus();
+                  };
+                },
+              )
             },
-            title: Text('No matching items.', style: widget.textStyle),
-            trailing: Icon(Icons.cancel, color: widget.clearIconColor),
+            behavior: HitTestBehavior.opaque,
+            child: ListTile(
+              title: Text('No matching items.', style: widget.textStyle),
+              trailing: Icon(Icons.cancel, color: widget.clearIconColor),
+            ),
           ),
         ],
       );
@@ -199,27 +212,32 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return TextFieldTapRegion(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                // set the controller value to what was selected
-                setState(() {
-                  // if we have a label property, and getSelectedValue function
-                  // send getSelectedValue to parent widget using the label property
-                  widget.controller.text = filteredList[i].text;
-                  widget.onChanged(filteredList[i].value);
-                });
-                // reset the list so it's empty and not visible
-                resetList();
-                // remove the focus node so we aren't editing the text
-                // FocusScope.of(context).unfocus();
+        return RawGestureDetector(
+          gestures: {
+            AllowMultipleGestureRecognizer:
+                GestureRecognizerFactoryWithHandlers<
+                    AllowMultipleGestureRecognizer>(
+              () => AllowMultipleGestureRecognizer(),
+              (AllowMultipleGestureRecognizer instance) {
+                instance.onTap = () {
+                  // set the controller value to what was selected
+                  setState(() {
+                    // if we have a label property, and getSelectedValue function
+                    // send getSelectedValue to parent widget using the label property
+                    widget.controller.text = filteredList[i].text;
+                    widget.onChanged(filteredList[i].value);
+                  });
+                  // reset the list so it's empty and not visible
+                  resetList();
+                  // remove the focus node so we aren't editing the text
+                  // FocusScope.of(context).unfocus();
+                };
               },
-              child: ListTile(
-                title: Text(filteredList[i].text, style: widget.textStyle),
-              ),
-            ),
+            )
+          },
+          behavior: HitTestBehavior.opaque,
+          child: ListTile(
+            title: Text(filteredList[i].text, style: widget.textStyle),
           ),
         );
       },
@@ -310,36 +328,54 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       ),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: this._layerLink,
-      child: TextFormField(
-        controller: widget.controller,
-        keyboardAppearance: widget.keyboardAppearance,
-        validator: widget.validator,
-        focusNode: this._focusNode,
-        decoration: widget.decoration,
-        style: widget.textStyle,
-        onTap: () {
-          _debouncer.run(() {
-            setState(() {
-              updateList();
-            });
-          });
+      child: RawGestureDetector(
+        gestures: {
+          AllowMultipleGestureRecognizer: GestureRecognizerFactoryWithHandlers<
+              AllowMultipleGestureRecognizer>(
+            () => AllowMultipleGestureRecognizer(),
+            (AllowMultipleGestureRecognizer instance) {
+              instance.onTap = () {
+                _debouncer.run(() {
+                  setState(() {
+                    updateList();
+                  });
+                });
+              };
+            },
+          )
         },
-        onChanged: (String value) {
-          _debouncer.run(() {
-            setState(() {
-              updateList();
+        behavior: HitTestBehavior.opaque,
+        child: TextFormField(
+          controller: widget.controller,
+          keyboardAppearance: widget.keyboardAppearance,
+          validator: widget.validator,
+          focusNode: this._focusNode,
+          decoration: widget.decoration,
+          style: widget.textStyle,
+          // onTap: () {
+          //   _debouncer.run(() {
+          //     setState(() {
+          //       updateList();
+          //     });
+          //   });
+          // },
+          onChanged: (String value) {
+            _debouncer.run(() {
+              setState(() {
+                updateList();
+              });
             });
-          });
 
-          if (value.isEmpty) {
-            widget.onChanged(null);
-          }
-        },
+            if (value.isEmpty) {
+              widget.onChanged(null);
+            }
+          },
+        ),
       ),
     );
   }
@@ -377,4 +413,11 @@ class ScrollbarDecoration {
 
   /// {@macro flutter.widgets.ScrollbarThemeData}
   final ScrollbarThemeData theme;
+}
+
+class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
+  }
 }
