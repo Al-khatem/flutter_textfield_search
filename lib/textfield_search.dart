@@ -178,7 +178,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         shrinkWrap: true,
         // controller: _scrollController,
         children: <Widget>[
-          ListTile(
+          GestureDetector(
             onTap: () {
               // clear the text field controller to reset it
               widget.controller.clear();
@@ -190,8 +190,10 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               // remove the focus node so we aren't editing the text
               FocusScope.of(context).unfocus();
             },
-            title: Text('No matching items.', style: widget.textStyle),
-            trailing: Icon(Icons.cancel, color: widget.clearIconColor),
+            child: ListTile(
+              title: Text('No matching items.', style: widget.textStyle),
+              trailing: Icon(Icons.cancel, color: widget.clearIconColor),
+            ),
           ),
         ],
       );
@@ -199,27 +201,22 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return TextFieldTapRegion(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                // set the controller value to what was selected
-                setState(() {
-                  // if we have a label property, and getSelectedValue function
-                  // send getSelectedValue to parent widget using the label property
-                  widget.controller.text = filteredList[i].text;
-                  widget.onChanged(filteredList[i].value);
-                });
-                // reset the list so it's empty and not visible
-                resetList();
-                // remove the focus node so we aren't editing the text
-                // FocusScope.of(context).unfocus();
-              },
-              child: ListTile(
-                title: Text(filteredList[i].text, style: widget.textStyle),
-              ),
-            ),
+        return GestureDetector(
+          onTap: () {
+            // set the controller value to what was selected
+            setState(() {
+              // if we have a label property, and getSelectedValue function
+              // send getSelectedValue to parent widget using the label property
+              widget.controller.text = filteredList[i].text;
+              widget.onChanged(filteredList[i].value);
+            });
+            // reset the list so it's empty and not visible
+            resetList();
+            // remove the focus node so we aren't editing the text
+            // FocusScope.of(context).unfocus();
+          },
+          child: ListTile(
+            title: Text(filteredList[i].text, style: widget.textStyle),
           ),
         );
       },
@@ -322,13 +319,13 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         focusNode: this._focusNode,
         decoration: widget.decoration,
         style: widget.textStyle,
-        onTap: () {
-          _debouncer.run(() {
-            setState(() {
-              updateList();
-            });
-          });
-        },
+        // onTap: () {
+        //   _debouncer.run(() {
+        //     setState(() {
+        //       updateList();
+        //     });
+        //   });
+        // },
         onChanged: (String value) {
           _debouncer.run(() {
             setState(() {
