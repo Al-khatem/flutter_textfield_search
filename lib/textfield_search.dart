@@ -319,13 +319,13 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         focusNode: this._focusNode,
         decoration: widget.decoration,
         style: widget.textStyle,
-        // onTap: () {
-        //   _debouncer.run(() {
-        //     setState(() {
-        //       updateList();
-        //     });
-        //   });
-        // },
+        onTap: () {
+          _debouncer.run(() {
+            setState(() {
+              updateList();
+            });
+          });
+        },
         onChanged: (String value) {
           _debouncer.run(() {
             setState(() {
