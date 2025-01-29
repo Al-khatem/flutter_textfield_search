@@ -190,8 +190,10 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
               // remove the focus node so we aren't editing the text
               FocusScope.of(context).unfocus();
             },
-            behavior: HitTestBehavior.translucent,
-            child: Text('No matching items.', style: widget.textStyle),
+            child: ListTile(
+              title: Text('No matching items.', style: widget.textStyle),
+              trailing: Icon(Icons.cancel, color: widget.clearIconColor),
+            ),
           ),
         ],
       );
@@ -211,9 +213,11 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
             // reset the list so it's empty and not visible
             resetList();
             // remove the focus node so we aren't editing the text
-            FocusScope.of(context).unfocus();
+            // FocusScope.of(context).unfocus();
           },
-          child: Text(filteredList[i].text, style: widget.textStyle),
+          child: ListTile(
+            title: Text(filteredList[i].text, style: widget.textStyle),
+          ),
         );
       },
       padding: EdgeInsets.zero,

@@ -1,5 +1,6 @@
 // EXAMPLE use case for TextFieldSearch Widget
 import 'package:flutter/material.dart';
+import 'package:textfield_search/search_model.dart';
 import 'package:textfield_search/textfield_search.dart';
 import 'dart:async';
 
@@ -152,15 +153,16 @@ class _MyHomePageState extends State<MyHomePage> {
               //     future: () {
               //       return fetchSimpleData();
               //     }),
-              // SizedBox(height: 16),
-              // TextFieldSearch(
-              //     initialList: _testList,
-              //     label: 'Simple List',
-              //     controller: myController),
-              // SizedBox(height: 16),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
+              SizedBox(height: 16),
+              TextFieldSearch(
+                initialList: _testList
+                    .map((e) => TextFiledSearchModel<String>(text: e, value: e))
+                    .toList(),
+                // label: 'Simple List',
+                controller: myController,
+                onChanged: (value) {},
               ),
+              // SizedBox(height: 16),
             ],
           ),
         ),
