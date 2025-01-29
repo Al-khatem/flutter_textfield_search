@@ -230,7 +230,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
                   // reset the list so it's empty and not visible
                   resetList();
                   // remove the focus node so we aren't editing the text
-                 FocusScope.of(context).unfocus();
+                  FocusScope.of(context).unfocus();
                 };
               },
             )
@@ -328,7 +328,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       ),
     );
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
@@ -357,13 +357,13 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
           focusNode: this._focusNode,
           decoration: widget.decoration,
           style: widget.textStyle,
-          // onTap: () {
-          //   _debouncer.run(() {
-          //     setState(() {
-          //       updateList();
-          //     });
-          //   });
-          // },
+          onTap: () {
+            _debouncer.run(() {
+              setState(() {
+                updateList();
+              });
+            });
+          },
           onChanged: (String value) {
             _debouncer.run(() {
               setState(() {
