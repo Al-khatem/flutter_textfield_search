@@ -180,15 +180,20 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         children: <Widget>[
           InkWell(
             onTap: () {
-              // clear the text field controller to reset it
-              widget.controller.clear();
-              setState(() {
-                itemsFound = false;
-              });
-              // reset the list so it's empty and not visible
-              resetList();
-              // remove the focus node so we aren't editing the text
-              FocusScope.of(context).unfocus();
+              Future.delayed(
+                Duration.zero,
+                () {
+                  // clear the text field controller to reset it
+                  widget.controller.clear();
+                  setState(() {
+                    itemsFound = false;
+                  });
+                  // reset the list so it's empty and not visible
+                  resetList();
+                  // remove the focus node so we aren't editing the text
+                  FocusScope.of(context).unfocus();
+                },
+              );
             },
             child: ListTile(
               title: Text('No matching items.', style: widget.textStyle),
@@ -203,17 +208,22 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
       itemBuilder: (context, i) {
         return InkWell(
           onTap: () {
-            // set the controller value to what was selected
-            setState(() {
-              // if we have a label property, and getSelectedValue function
-              // send getSelectedValue to parent widget using the label property
-              widget.controller.text = filteredList[i].text;
-              widget.onChanged(filteredList[i].value);
-            });
-            // reset the list so it's empty and not visible
-            resetList();
-            // remove the focus node so we aren't editing the text
-            // FocusScope.of(context).unfocus();
+            Future.delayed(
+              Duration.zero,
+              () {
+                // set the controller value to what was selected
+                setState(() {
+                  // if we have a label property, and getSelectedValue function
+                  // send getSelectedValue to parent widget using the label property
+                  widget.controller.text = filteredList[i].text;
+                  widget.onChanged(filteredList[i].value);
+                });
+                // reset the list so it's empty and not visible
+                resetList();
+                // remove the focus node so we aren't editing the text
+                FocusScope.of(context).unfocus();
+              },
+            );
           },
           child: ListTile(
             title: Text(filteredList[i].text, style: widget.textStyle),
