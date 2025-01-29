@@ -178,7 +178,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
         shrinkWrap: true,
         // controller: _scrollController,
         children: <Widget>[
-          GestureDetector(
+          InkWell(
             onTap: () {
               // clear the text field controller to reset it
               widget.controller.clear();
@@ -201,7 +201,7 @@ class _TextFieldSearchState extends State<TextFieldSearch> {
     return ListView.builder(
       itemCount: filteredList.length,
       itemBuilder: (context, i) {
-        return GestureDetector(
+        return InkWell(
           onTap: () {
             // set the controller value to what was selected
             setState(() {
